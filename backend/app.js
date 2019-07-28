@@ -14,8 +14,6 @@ const io = require('socket.io').listen(server)
 
 app.io = io
 
-const chatSocketIOController = require('./controller/chat')(io)
-
 // io.on("connection", socket => {
 //     io.emit('send chat', 'users');
 //     console.log("A user connected s");

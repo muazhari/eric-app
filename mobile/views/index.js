@@ -94,7 +94,7 @@ export default class App extends Component {
           }}
           rounded
           primary
-          onPress={() => this.handleRoomCreate()}
+          onPress={this.handleRoomCreate()}
         >
           <Icon type="FontAwesome" name="plus" />
         </Button>
