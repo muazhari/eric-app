@@ -1,10 +1,10 @@
 const bcrypt = require('bcryptjs')
-
-const { user } = model
 const jwt = require('jsonwebtoken')
 const app = require('express')()
 const nodeMailer = require('nodemailer')
 const model = require('../model')
+
+const { user } = model
 
 exports.login = (req, res, next) => {
   const { password, email } = req.body

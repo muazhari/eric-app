@@ -28,7 +28,7 @@ import {
 
 import { NavigationActions, StackActions } from "react-navigation";
 import axios from "axios";
-import Utils from "../Utils"
+import Utils from "./Utils"
 import SocketsInit from "./SocketsInit"
 import Sockets from "./Sockets"
 
@@ -38,7 +38,7 @@ export default class App extends Component {
     this.state = {
       isloading: false,
       email: "",
-      password: ""
+      password: "",
       userId: "123123"
     };
   }

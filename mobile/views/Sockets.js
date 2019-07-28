@@ -1,8 +1,7 @@
-import { Alert } from "react-native";
-import io from "socket.io-client";
-import moment from "moment";
-import Utils from "../Config/Utils";
-import LiveStatus from "../Config/liveStatus";
+const { Alert } = require( "react-native")
+const io = require( "socket.io-client")
+const moment = require( "moment")
+const Utils = require( "./Utils")
 
 let socket = null;
 
@@ -56,8 +55,8 @@ const emitRoomCreate = (roomName, userId) => {
 const OnRoomCreate = () => {
   socket.on("room-post-create", callback => {
     if (callback) {
-      const { memberViewer } = callback;
-      Utils.getContainer("chats").setState({ memberViewer });
+      const { roomList } = callback;
+      Utils.getContainer("chats").setState({ roomNameList });
     }
   });
   console.tron.log("room-post-create");
@@ -67,10 +66,10 @@ const emitRoomJoin = (roomName, userId) => {
   socket.emit(
     "room-pre-join",
     { roomName, userId },
-    // countViewer verified by server.
+    // countMembers verified by server.
     data => {
       if (data) {
-        const { countViewer, liveStatus } = data;
+        const { countMembers, liveStatus } = data;
         Utils.getContainer("chats").setState({
           countMembers
         });

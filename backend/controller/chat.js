@@ -1,8 +1,7 @@
-import Utils from '../Utils'
-
 const mongoose = require('mongoose')
+const Utils = require('../Utils')
 
-const Room = mongoose.model('Room')
+// const Room = mongoose.model('Room')
 
 const roomList = {}
 
@@ -60,6 +59,8 @@ module.exports = io => {
       })
       console.log(JSON.stringify(roomList))
       callback(socketIds.length)
+      const roomNameList = Object.keys(roomList)
+      socket.broadcast.to(roomName).emit('room-post-join', { roomNameList })
     })
 
     socket.on('room-pre-join', data => {
