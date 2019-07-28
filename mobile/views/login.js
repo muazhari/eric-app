@@ -17,13 +17,15 @@ import {
     Root
 } from "native-base";
 import axios from 'axios'
-
+import {NavigationActions, StackActions} from "react-navigation";
+axios.defaults.headers['Content-Type'] = 'application/json; charset=utf-8';
 export default class App extends Component {
     constructor() {
         super();
         this.state = {
             splashScreen: true,
-            isLoading: false
+            isLoading: false,
+            erroremail:false
         }
     }
 
@@ -33,6 +35,14 @@ export default class App extends Component {
                 splashScreen: false,
                 showToast: false
             })
+            if(AsyncStorage.getItem('token') && AsyncStorage.getItem('user') && AsyncStorage.getItem('userid')){
+                this.props.navigation.dispatch(StackActions.reset({
+                    index: 0, // <-- currect active route from actions array
+                    actions: [
+                        NavigationActions.navigate({routeName: 'IndexPage'}),
+                    ],
+                }))
+            }
         }, 1500)
 
     }
@@ -42,22 +52,29 @@ export default class App extends Component {
             isLoading: true
         })
         const url = require('../global').url;
-        axios.post(`http://192.168.88.11:3000/mobile/login`, {
+        axios.post(`${url}login`, {
             email: this.state.email,
-            password: this.state.password
+            password: this.state.password,
         }).then(res => {
             AsyncStorage.setItem('token',res.data._token);
             AsyncStorage.setItem('user',res.data.username);
-            AsyncStorage.setItem('login',"asd");
+            AsyncStorage.setItem('userid',res.data._id);
             // alert(JSON.stringify(res))
             this.setState({
                 isLoading: false
             })
-            Toast.show({
-                text: "Success Login",
-                buttonText: "Okay",
-                type: "success"
-            })
+            // Toast.show({
+            //     text: "Success Login",
+            //     buttonText: "Okay",
+            //     type: "success",
+            //     duration:10000
+            // })
+            this.props.navigation.dispatch(StackActions.reset({
+                index: 0, // <-- currect active route from actions array
+                actions: [
+                    NavigationActions.navigate({routeName: 'IndexPage'}),
+                ],
+            }))
         }).catch(err => {
             this.setState({
                 isLoading: false
@@ -65,14 +82,12 @@ export default class App extends Component {
             Toast.show({
                 text: err.response.data.message,
                 buttonText: "Okay",
-                type: "danger"
+                type: "danger",
+                duration:10000
             })
 
         })
     };
-    onClickListener = (viewId) => {
-        // Alert.alert("Alert", "Button pressed "+viewId);
-    }
 
     render() {
         if (this.state.splashScreen) {
@@ -149,9 +164,9 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         width:250,
         height:45,
-        marginBottom:20,
         flexDirection: 'row',
-        alignItems:'center'
+        alignItems:'center',
+        marginBottom:20,
     },
     inputs:{
         height:45,
@@ -163,6 +178,12 @@ const styles = StyleSheet.create({
         width:30,
         height:30,
         marginLeft:15,
+        justifyContent: 'center'
+    },
+    warningIcon:{
+        width:30,
+        height:30,
+        marginRight:15,
         justifyContent: 'center'
     },
     buttonContainer: {

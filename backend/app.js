@@ -12,7 +12,7 @@ io.on("connection", socket => {
     io.emit('send chat', 'users');
     console.log("A user connected s");
 });
-
+io.emit('send chat', 'users');
 app.use((req, res, next) => {
     req.io = io;
     next()

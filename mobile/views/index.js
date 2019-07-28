@@ -1,6 +1,21 @@
 import React,{Component} from 'react'
 import {AsyncStorage} from 'react-native'
-import {Button, Container, Content, Form, Icon, Input, Item, Label, Spinner, Text,Image} from 'native-base'
+import {
+    Button,
+    Container,
+    Content,
+    Form,
+    Icon,
+    Input,
+    Item,
+    Label,
+    Spinner,
+    Text,
+    Image,
+    Header,
+    Body, Title, Right, Tabs, Tab, Footer, FooterTab, List, ListItem, Left, Thumbnail
+} from 'native-base'
+
 import {NavigationActions,StackActions} from "react-navigation"
 import axios from 'axios'
 
@@ -14,52 +29,39 @@ export default class App extends Component {
         }
     }
 
-    submitform = () => {
-        this.setState({
-            isloading: true,
-        });
-        axios.post('https://7queue.net/api/login', {
-            email: this.state.email,
-            password: this.state.password
-        }).then(res => {
-            this.setState({
-                isloading: false
-            });
-            if (res.data.status == 0) {
-                alert('Password Salah')
-            } else {
-                AsyncStorage.setItem('token', res.data.apiKey);
-                const resetAction = StackActions.reset({
-                    index: 0, // <-- currect active route from actions array
-                    actions: [
-                        NavigationActions.navigate({routeName: 'IndexPage'}),
-                    ],
-                });
-                this.props.navigation.dispatch(resetAction)
-            }
-        }).catch(err => console.log(err));
-    };
-
     render() {
         return (
-            <Container style={{backgroundColor: '#fff', paddingTop: "50%", width: '100%', alignItems: 'center'}}>
-                <Content style={{width: '90%'}}>
-                    <Form style={{width: '90%'}}>
-                        <Item floatingLabel>
-                            <Label style={{marginBottom: 10}}> Username </Label>
-                            <Input onChangeText={text => this.setState({email: text})} name={"username"}/>
-                        </Item>
-                        <Item floatingLabel last>
-                            <Label style={{marginBottom: 10}}> Password </Label>
-                            <Input onChangeText={text => this.setState({password: text})} name={"password"}
-                                   secureTextEntry={!this.state.showpass}/>
-                            <Icon active onPress={() => this.setState({showpass: !this.state.showpass})}
-                                  name={this.state.showpass ? "eye-off" : "eye"}/>
-                        </Item>
-                        <Button style={{alignSelf: "center", marginTop: 30}}
-                                onPress={this.submitform}>{this.state.isloading?<Spinner/>:<Text> Login </Text>}</Button>
-                    </Form>
+            <Container>
+                <Header hasTabs>
+                    <Body>
+                        <Title>Index Menu</Title>
+                    </Body>
+                    <Right/>
+                </Header>
+                <Content>
+                    <List>
+                        <ListItem avatar>
+                            <Left>
+                                <Thumbnail source={{ uri: 'https://github.githubassets.com/favicon.ico' }} />
+                            </Left>
+                            <Body>
+                                <Text>Kumar Pratik</Text>
+                                <Text note>Doing what you like will always keep you happy . .</Text>
+                            </Body>
+                            <Right>
+                                <Text note>3:43 pm</Text>
+                            </Right>
+                        </ListItem>
+                    </List>
                 </Content>
+                <Footer>
+                    <FooterTab>
+                        <Button vertical active><Icon name="apps"/><Text> Apps </Text></Button>
+                        <Button vertical onPress={this.props.navigation.navigate('chat')}><Icon name="chatboxes"/><Text> Chat </Text></Button>
+                        <Button vertical onPress={this.props.navigation.navigate('timeline')}><Icon name="paper"/><Text> TimeLine </Text></Button>
+                        <Button vertical onPress={this.props.navigation.navigate('profile')}><Icon name="person"/><Text> Profile </Text></Button>
+                    </FooterTab>
+                </Footer>
             </Container>
 
         );

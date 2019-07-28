@@ -9,9 +9,10 @@ mongoose.connect('mongodb://localhost/react', {
 });
 const userSchema = new mongoose.Schema({
     email: {type: String, required: true, unique: true},
-    username: {type: String, required: true},
+    username: {type: String, required: true, unique: true},
     password: {type: String, required: true},
     email_st: {type: Number, default: 0},
+    nickname: {type: String},
     token: {type: String, unique: true},
 });
 

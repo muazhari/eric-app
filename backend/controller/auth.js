@@ -7,6 +7,7 @@ const nodeMailer = require('nodemailer');
 
 exports.login = (req, res, next) => {
     const {password, email} = req.body;
+    console.log(req.body)
     if (password == null || email == null) {
         res.status(401).json({
             message: "Email / Password is Empty"
@@ -38,7 +39,11 @@ exports.login = (req, res, next) => {
                                         if (err) {
                                             res.status(500).json({error: err})
                                         } else {
-                                            res.status(200).json({_token: token, username: data.username})
+                                            res.status(200).json({
+                                                _token: token,
+                                                username: data.username,
+                                                _id: data._id,
+                                            })
                                         }
                                     })
                                 } else {
@@ -387,10 +392,25 @@ exports.getlogin = (req, res, next) => {
     res.send('socket io cek')
 };
 exports.verify = (req, res, next) => {
-    user.findOneAndUpdate(req.params,{email_st:1},{upsert:true},(err,doc) => {
-        if(err) return res.status(500).json({
+    user.findOneAndUpdate(req.params, {email_st: 1}, {upsert: true}, (err, doc) => {
+        if (err) return res.status(500).json({
             err: err
-        })
+        });
         return res.render('email')
     })
-}
+};
+exports.checkemail = (req, res, next) => {
+    console.log(req.body.email)
+    user.count({email: req.body.email}, (err, c) => {
+        res.status(c ? 500 : 200).send({
+            message: c ? "Email tersedia" : ""
+        })
+    })
+};
+exports.checkusername = (req, res, next) => {
+    user.count({username: req.body.username}, (err, c) => {
+        res.status(c ? 500 : 200).send({
+            message: c ? "Username tersedia" : ""
+        })
+    })
+};

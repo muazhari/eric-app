@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {YellowBox} from 'react-native'
 import {createStackNavigator,createAppContainer} from 'react-navigation'
 import Index from './views'
 import Login from './views/login'
@@ -9,7 +8,7 @@ const RootStack = createStackNavigator(
     {
         IndexPage: {screen: Index},
         LoginPage: {screen: Login},
-        RegisterPage: {screen: Register}
+        RegisterPage: {screen: Register},
     },
     {
         initialRouteName: 'LoginPage',
