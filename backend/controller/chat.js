@@ -4,6 +4,11 @@ const Utils = require('../Utils')
 // const Room = mongoose.model('Room')
 
 const roomList = {}
+roomList.chats = {
+  member: [],
+  countMembers: 1,
+  messages: [],
+}
 
 module.exports = io => {
   function socketIdsInRoom(roomName) {

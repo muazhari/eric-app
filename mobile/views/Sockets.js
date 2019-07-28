@@ -1,7 +1,7 @@
-const { Alert } = require( "react-native")
-const io = require( "socket.io-client")
-const moment = require( "moment")
-const Utils = require( "./Utils")
+const { Alert } = require("react-native");
+const io = require("socket.io-client");
+const moment = require("moment");
+const Utils = require("./Utils");
 
 let socket = null;
 
@@ -107,7 +107,7 @@ const emitRoomLeave = (roomName, userId) => {
   console.tron.log("room-pre-leave");
 };
 
-const handleOnRoomLeave = () => {
+const OnRoomLeave = () => {
   socket.on("room-post-leave", callback => {
     console.tron.log("room-post-leave");
     if (callback) {
@@ -129,32 +129,20 @@ const emitRoomSendMessage = (
   socket.emit("room-pre-send-message", {
     roomName,
     userId,
-    message,
-    productId,
-    productImageUrl,
-    productUrl
+    message
   });
 
   console.tron.log("room-pre-send-message");
 };
 
-const handleOnRoomSendMessage = () => {
+const OnRoomSendMessage = () => {
   socket.on("room-post-send-message", callback => {
-    const {
-      userId,
-      message,
-      productId,
-      productImageUrl,
-      productUrl
-    } = callback;
+    const { userId, message } = callback;
     listMessages = Utils.getContainer("chats").state.listMessages;
     const newListMessages = listMessages.slice();
     newListMessages.push({
       userId,
-      message,
-      productId,
-      productImageUrl,
-      productUrl
+      message
     });
     Utils.getContainer("chats").setState({
       listMessages: newListMessages
@@ -167,15 +155,14 @@ const handleOnRoomSendMessage = () => {
 const SocketUtils = {
   getSocket,
   connect,
-  handleOnConnect,
-  emitClientDisconnect,
+  OnConnect,
 
   emitRoomJoin,
-  handleOnRoomJoin,
+  OnRoomJoin,
   emitRoomLeave,
-  handleOnRoomLeave,
+  OnRoomLeave,
 
   emitRoomSendMessage,
-  handleOnRoomSendMessage
+  eOnRoomSendMessage
 };
 export default SocketUtils;

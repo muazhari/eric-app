@@ -1,4 +1,4 @@
-import Sockets from "./Sockets";
+const Sockets = require("./Sockets");
 
 export default function InitSocketUtils() {
   Sockets.connect();

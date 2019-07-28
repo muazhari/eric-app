@@ -28,9 +28,9 @@ import {
 
 import { NavigationActions, StackActions } from "react-navigation";
 import axios from "axios";
-import Utils from "./Utils"
-import SocketsInit from "./SocketsInit"
-import Sockets from "./Sockets"
+import Utils from "./Utils";
+import SocketsInit from "./SocketsInit";
+import Sockets from "./Sockets";
 
 export default class App extends Component {
   constructor() {
@@ -43,18 +43,15 @@ export default class App extends Component {
     };
   }
 
-  componentWillMount(){
-      SocketsInit()
-  }
-
-  componentDidMount(){
-      Utils.setContainer("chats", this)
+  componentDidMount() {
+    Utils.setContainer("chats", this);
+    Sockets.emitRoomJoin("chats", userId);
   }
 
   handleRoomCreate = () => {
-      const { userId } = this.state
-      Sockets.emitRoomCreate("Room1", userId)
-  }
+    const { userId } = this.state;
+    Sockets.emitRoomCreate("Room1", userId);
+  };
 
   render() {
     return (
@@ -87,10 +84,8 @@ export default class App extends Component {
             </ListItem>
           </List>
         </Content>
-        <Button rounded primary
-            onPress ={() => this.handleRoomCreate()}
-            >
-          <Icon name='plus' />
+        <Button rounded primary onPress={() => this.handleRoomCreate()}>
+          <Icon name="plus" />
         </Button>
         <Footer>
           <FooterTab>
