@@ -18,7 +18,7 @@ const RootStack = createStackNavigator(
 console.disableYellowBox = true;
 const AppContainer = createAppContainer(RootStack)
 export default class App extends Component {
-
+    c
     render() {
         return (
             <AppContainer />

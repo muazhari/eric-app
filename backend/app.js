@@ -5,18 +5,25 @@ const logger = require('morgan');
 const bodyparser = require('body-parser');
 const path = require('path');
 const app = express();
-const io = require('socket.io')();
+
+const http = require('http');
+const server = http.createServer(app);
+const io = require('socket.io').listen(server);
 app.io = io;
 
-io.on("connection", socket => {
-    io.emit('send chat', 'users');
-    console.log("A user connected s");
-});
-io.emit('send chat', 'users');
-app.use((req, res, next) => {
-    req.io = io;
-    next()
-});
+const socketIOController = require('./app/controllers/chat')(app.io);
+
+// io.on("connection", socket => {
+//     io.emit('send chat', 'users');
+//     console.log("A user connected s");
+// });
+// io.emit('send chat', 'users');
+// app.use((req, res, next) => {
+//     req.io = io;
+//     next()
+// });
+
+
 // console.log(io)
 console.log('msak');
 const indexRouter = require('./routes/index');
