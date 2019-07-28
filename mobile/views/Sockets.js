@@ -163,6 +163,6 @@ const SocketUtils = {
   OnRoomLeave,
 
   emitRoomSendMessage,
-  eOnRoomSendMessage
+  OnRoomSendMessage
 };
 export default SocketUtils;
