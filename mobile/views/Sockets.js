@@ -1,7 +1,8 @@
 const { Alert } = require("react-native");
-const io = require("socket.io-client");
+// const io = require("socket.io-client");
+import io from "socket.io-client"
 const moment = require("moment");
-const Utils = require("./Utils");
+import Utils from "./Utils"
 
 let socket = null;
 
@@ -9,7 +10,7 @@ const getSocket = () => {
   return socket;
 };
 
-const connect = () => {
+const getConnect = () => {
   socket = io.connect(Utils.getSocketIOIP(), {
     timeout: 10000,
     jsonp: false,
@@ -28,15 +29,15 @@ const connect = () => {
   });
 };
 
-const handleOnConnect = () => {
+const onConnect = () => {
   socket.on("connect", callback => {
-    console.tron.log("connect");
+    console.log("connect");
   });
 };
 
 // const emitClientDisconnect = () => {
 //   socket.emit("disconnect", callback => {
-//     console.tron.log("by client disconnect");
+//     console.log("by client disconnect");
 //   });
 // };
 
@@ -49,17 +50,17 @@ const emitRoomCreate = (roomName, userId) => {
       });
     }
   });
-  console.tron.log("room-pre-create");
+  console.log("room-pre-create");
 };
 
-const OnRoomCreate = () => {
+const onRoomCreate = () => {
   socket.on("room-post-create", callback => {
     if (callback) {
       const { roomList } = callback;
       Utils.getContainer("chats").setState({ roomNameList });
     }
   });
-  console.tron.log("room-post-create");
+  console.log("room-post-create");
 };
 
 const emitRoomJoin = (roomName, userId) => {
@@ -76,17 +77,17 @@ const emitRoomJoin = (roomName, userId) => {
       }
     }
   );
-  console.tron.log("room-pre-join");
+  console.log("room-pre-join");
 };
 
-const OnRoomJoin = () => {
+const onRoomJoin = () => {
   socket.on("room-post-join", callback => {
     if (callback) {
       const { memberViewer } = callback;
       Utils.getContainer("chats").setState({ memberViewer });
     }
   });
-  console.tron.log("room-post-join");
+  console.log("room-post-join");
 };
 
 const emitRoomLeave = (roomName, userId) => {
@@ -104,18 +105,18 @@ const emitRoomLeave = (roomName, userId) => {
     }
   );
 
-  console.tron.log("room-pre-leave");
+  console.log("room-pre-leave");
 };
 
-const OnRoomLeave = () => {
+const onRoomLeave = () => {
   socket.on("room-post-leave", callback => {
-    console.tron.log("room-post-leave");
+    console.log("room-post-leave");
     if (callback) {
       const { memberViewer } = callback;
       Utils.getContainer("chats").setState({ memberViewer });
     }
   });
-  console.tron.log("room-post-leave");
+  console.log("room-post-leave");
 };
 
 const emitRoomSendMessage = (
@@ -132,10 +133,10 @@ const emitRoomSendMessage = (
     message
   });
 
-  console.tron.log("room-pre-send-message");
+  console.log("room-pre-send-message");
 };
 
-const OnRoomSendMessage = () => {
+const onRoomSendMessage = () => {
   socket.on("room-post-send-message", callback => {
     const { userId, message } = callback;
     listMessages = Utils.getContainer("chats").state.listMessages;
@@ -149,20 +150,23 @@ const OnRoomSendMessage = () => {
     });
   });
 
-  console.tron.log("room-post-send-message");
+  console.log("room-post-send-message");
 };
 
-const SocketUtils = {
+const Sockets = {
   getSocket,
-  connect,
-  OnConnect,
+  getConnect,
+  onConnect,
 
+
+  emitRoomCreate,
+  onRoomCreate,
   emitRoomJoin,
-  OnRoomJoin,
+  onRoomJoin,
   emitRoomLeave,
-  OnRoomLeave,
+  onRoomLeave,
 
   emitRoomSendMessage,
-  OnRoomSendMessage
+  onRoomSendMessage
 };
-export default SocketUtils;
+export default Sockets;

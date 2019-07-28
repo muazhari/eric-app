@@ -44,6 +44,7 @@ export default class App extends Component {
   }
 
   componentDidMount() {
+    const { userId } = this.state;
     Utils.setContainer("chats", this);
     Sockets.emitRoomJoin("chats", userId);
   }
@@ -85,7 +86,7 @@ export default class App extends Component {
           </List>
         </Content>
         <Button rounded primary onPress={() => this.handleRoomCreate()}>
-          <Icon name="plus" />
+          <Icon type="FontAwesome" name="plus" />
         </Button>
         <Footer>
           <FooterTab>

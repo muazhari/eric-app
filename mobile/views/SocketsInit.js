@@ -1,12 +1,13 @@
-const Sockets = require("./Sockets");
+// const Sockets = require("./Sockets");
+import Sockets from "./Sockets"
 
 export default function InitSocketUtils() {
-  Sockets.connect();
-  Sockets.OnConnect();
+  Sockets.getConnect();
+  // Sockets.onConnect()
 
-  Sockets.OnRoomCreate();
-  Sockets.OnRoomJoin();
-  Sockets.OnRoomLeave();
+  Sockets.onRoomCreate();
+  Sockets.onRoomJoin();
+  Sockets.onRoomLeave();
 
-  Sockets.OnRoomSendMessage();
+  Sockets.onRoomSendMessage();
 }
