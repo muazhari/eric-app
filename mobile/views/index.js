@@ -85,7 +85,17 @@ export default class App extends Component {
             </ListItem>
           </List>
         </Content>
-        <Button rounded primary onPress={() => this.handleRoomCreate()}>
+        <Button
+          style={{
+            marginLeft: 300,
+            marginBottom: 30,
+            right: 30,
+            justifyContent: "center"
+          }}
+          rounded
+          primary
+          onPress={() => this.handleRoomCreate()}
+        >
           <Icon type="FontAwesome" name="plus" />
         </Button>
         <Footer>
