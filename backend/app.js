@@ -11,7 +11,7 @@ const server = http.createServer(app);
 const io = require('socket.io').listen(server);
 app.io = io;
 
-const socketIOController = require('./app/controllers/chat')(app.io);
+const chatSocketIOController = require('./controller/chat')(app.io);
 
 // io.on("connection", socket => {
 //     io.emit('send chat', 'users');

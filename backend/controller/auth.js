@@ -1,128 +1,124 @@
-const model = require("../model");
-const bcrypt = require("bcryptjs");
-const user = model.user;
-const jwt = require("jsonwebtoken");
-const app = require("express")();
-const nodeMailer = require("nodemailer");
+const bcrypt = require('bcryptjs')
+
+const { user } = model
+const jwt = require('jsonwebtoken')
+const app = require('express')()
+const nodeMailer = require('nodemailer')
+const model = require('../model')
 
 exports.login = (req, res, next) => {
-  const { password, email } = req.body;
-  console.log(req.body);
+  const { password, email } = req.body
+  console.log(req.body)
   if (password == null || email == null) {
     res.status(401).json({
-      message: "Email / Password is Empty"
-    });
+      message: 'Email / Password is Empty',
+    })
   } else {
-    user.findOne({ email: email }, (err, data) => {
+    user.findOne({ email }, (err, data) => {
       if (err) {
         res.status(500).json({
-          error: err
-        });
+          error: err,
+        })
+      } else if (data == null) {
+        res.status(401).json({
+          message: 'Email Not Found',
+        })
       } else {
-        if (data == null) {
-          res.status(401).json({
-            message: "Email Not Found"
-          });
-        } else {
-          bcrypt.compare(password, data.password, (err, check) => {
-            if (err) {
-              res.status(500).json({
-                error: err
-              });
-            } else {
-              if (check) {
-                if (data.email_st) {
-                  jwt.sign(
-                    {
+        bcrypt.compare(password, data.password, (err, check) => {
+          if (err) {
+            res.status(500).json({
+              error: err,
+            })
+          } else if (check) {
+            if (data.email_st) {
+              jwt.sign(
+                {
+                  username: data.username,
+                  email,
+                },
+                'ysn852jd48',
+                { expiresIn: '1000000h' },
+                (err, token) => {
+                  if (err) {
+                    res.status(500).json({ error: err })
+                  } else {
+                    res.status(200).json({
+                      _token: token,
                       username: data.username,
-                      email: email
-                    },
-                    "ysn852jd48",
-                    { expiresIn: "1000000h" },
-                    (err, token) => {
-                      if (err) {
-                        res.status(500).json({ error: err });
-                      } else {
-                        res.status(200).json({
-                          _token: token,
-                          username: data.username,
-                          _id: data._id
-                        });
-                      }
-                    }
-                  );
-                } else {
-                  res.status(401).json({
-                    message: "Please Verify Your Email"
-                  });
+                      _id: data._id,
+                    })
+                  }
                 }
-              } else {
-                res.status(401).json({
-                  message: "Password Incorrect, Please Try Again"
-                });
-              }
+              )
+            } else {
+              res.status(401).json({
+                message: 'Please Verify Your Email',
+              })
             }
-          });
-        }
+          } else {
+            res.status(401).json({
+              message: 'Password Incorrect, Please Try Again',
+            })
+          }
+        })
       }
-    });
+    })
   }
-};
+}
 
 function makeid(length) {
-  var result = "";
-  var characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  var charactersLength = characters.length;
-  for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  let result = ''
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  const charactersLength = characters.length
+  for (let i = 0; i < length; i += 1) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength))
   }
-  return result;
+  return result
 }
 
 exports.register = async (req, res, next) => {
-  const { username, password, email } = req.body;
+  const { username, password, email } = req.body
   if (!username || !password || !email) {
     res.status(401).json({
-      error: "Username or Password or Email is empty",
+      error: 'Username or Password or Email is empty',
       debug: {
-        username: username,
-        password: password,
-        email: email
-      }
-    });
+        username,
+        password,
+        email,
+      },
+    })
   } else {
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(password, salt, async (err, enc_password) => {
-        const token = makeid(50);
+        const token = makeid(50)
         await user.create(
           {
-            username: username,
+            username,
             password: enc_password,
-            email: email,
-            token: token
+            email,
+            token,
           },
           err => {
             if (err) {
               res.status(500).json({
-                error: err
-              });
+                error: err,
+              })
             } else {
               const transpoter = nodeMailer.createTransport({
-                host: "smtp.gmail.com",
+                host: 'smtp.gmail.com',
                 port: 465,
                 secure: true,
-                service: "Gmail",
+                service: 'Gmail',
                 requireTLS: true,
                 auth: {
-                  user: "noreplyerictes@gmail.com",
-                  pass: "ysn852jd48;"
-                }
-              });
+                  user: 'noreplyerictes@gmail.com',
+                  pass: 'ysn852jd48;',
+                },
+              })
               const mailOption = {
-                from: "My Chat Email Verification",
+                from: 'My Chat Email Verification',
                 to: email,
-                subject: "Email Verification",
+                subject: 'Email Verification',
                 html: `
 <!DOCTYPE html PUBLIC>
 <html xmlns='http://www.w3.org/1999/xhtml'>
@@ -376,56 +372,51 @@ exports.register = async (req, res, next) => {
 
 
 </body>
-</html>`
-              };
+</html>`,
+              }
               transpoter.sendMail(mailOption, (err, info) => {
-                if (err) return console.error(err);
-              });
+                if (err) return console.error(err)
+              })
               res.status(200).json({
-                message: `User ${username} successfully Created! Please Verify Your Email`
-              });
+                message: `User ${username} successfully Created! Please Verify Your Email`,
+              })
             }
           }
-        );
-      });
-    });
+        )
+      })
+    })
   }
-};
+}
 exports.getlogin = (req, res, next) => {
-  const io = req.io;
-  io.emit("emit", {
-    user: "Eric",
-    msg: "Hello world"
-  });
+  const { io } = req
+  io.emit('emit', {
+    user: 'Eric',
+    msg: 'Hello world',
+  })
 
-  res.send("socket io cek");
-};
+  res.send('socket io cek')
+}
 exports.verify = (req, res, next) => {
-  user.findOneAndUpdate(
-    req.params,
-    { email_st: 1 },
-    { upsert: true },
-    (err, doc) => {
-      if (err)
-        return res.status(500).json({
-          err: err
-        });
-      return res.render("email");
-    }
-  );
-};
+  user.findOneAndUpdate(req.params, { email_st: 1 }, { upsert: true }, (err, doc) => {
+    if (err)
+      return res.status(500).json({
+        err,
+      })
+    return res.render('email')
+  })
+}
 exports.checkemail = (req, res, next) => {
-  console.log(req.body.email);
+  console.log(req.body.email)
   user.count({ email: req.body.email }, (err, c) => {
     res.status(c ? 500 : 200).send({
-      message: c ? "Email tersedia" : ""
-    });
-  });
-};
+      message: c ? 'Email tersedia' : '',
+    })
+  })
+}
 exports.checkusername = (req, res, next) => {
   user.count({ username: req.body.username }, (err, c) => {
     res.status(c ? 500 : 200).send({
-      message: c ? "Username tersedia" : ""
-    });
-  });
-};
+      message: c ? 'Username tersedia' : '',
+    })
+  })
+}
