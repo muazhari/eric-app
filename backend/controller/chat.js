@@ -5,7 +5,7 @@ const Utils = require('../Utils')
 
 const roomList = {}
 roomList.chats = {
-  member: [],
+  members: [],
   countMembers: 1,
   messages: [],
 }
@@ -25,7 +25,7 @@ module.exports = io => {
 
   function createRoom(roomName, error) {
     roomList[roomName] = {
-      member: [],
+      members: [],
       countMembers: 1,
       messages: [],
     }
@@ -33,10 +33,10 @@ module.exports = io => {
   }
 
   function findMember(socketId) {
-    for (const roomName in roomList) {
-      for (let i = 0; i < roomList[roomName].member.length; i++) {
-        if (roomList[roomName].member[i].socketId == socketId) {
-          return roomList[roomName].member[i]
+    for (const roomName in Object.keys(roomList)) {
+      for (let i = 0; i < roomList[roomName].members.length; i++) {
+        if (roomList[roomName].members[i].socketId == socketId) {
+          return roomList[roomName].members[i]
         }
       }
     }
@@ -58,7 +58,7 @@ module.exports = io => {
       // socket.broadcast.to(roomName).emit('newMeclient')
       const socketIds = socketIdsInRoom(roomName)
       roomList[roomName].countMembers += 1
-      roomList[roomName].member.push({
+      roomList[roomName].members.push({
         socketId: socket.id,
         userId,
       })
