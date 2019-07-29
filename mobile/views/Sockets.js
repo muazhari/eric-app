@@ -1,8 +1,8 @@
 const { Alert } = require("react-native");
 // const io = require("socket.io-client");
-import io from "socket.io-client"
+import io from "socket.io-client";
 const moment = require("moment");
-import Utils from "./Utils"
+import Utils from "./Utils";
 
 let socket = null;
 
@@ -119,14 +119,7 @@ const onRoomLeave = () => {
   console.log("room-post-leave");
 };
 
-const emitRoomSendMessage = (
-  roomName,
-  userId,
-  message,
-  productId,
-  productImageUrl,
-  productUrl
-) => {
+const emitRoomSendMessage = (roomName, userId, message) => {
   socket.emit("room-pre-send-message", {
     roomName,
     userId,
@@ -157,7 +150,6 @@ const Sockets = {
   getSocket,
   getConnect,
   onConnect,
-
 
   emitRoomCreate,
   onRoomCreate,
